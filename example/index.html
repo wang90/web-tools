@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body id ="body"> 
+    <script>
+        const body = document.getElementsByTagName("body")[0];
+        const arr = new Array(100).fill(1);
+        const list = arr.map((v,i)=>{
+            return bindHtml(i);
+        }).join('');
+        const html = `<h1>这是一个测试页面</h1>
+            <p>主要是为了测试滚动到最后的内容部分</p>
+            <ul>${list}</ul>`
+        body.innerHTML = html;
+        function bindHtml(index) {
+            return `<li>这是第${(index+1)}行</li>`;
+        }
+    </script>
+     <script src="/bundle.js"></script>
+</body>
+</html>
