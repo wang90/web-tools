@@ -1,43 +1,32 @@
+// 针对于chrome 插件进行配置
+
 var ScriptUrl = './dist/bundle.js';
 var RunAt  = 'document_start';
 var IsStatus = ['loading','complete'];
+var currentTabs = [];
 
 chrome.browserAction.onClicked.addListener((tabId, changeInfo, tab) => {
-    injectScript(tabId , { 
-        file: ScriptUrl,
-        runAt: RunAt }).then(res => {
-    }).catch(err => {
-    });
+    addExtension(tabId);
 });
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     var status = changeInfo.status;
     if ( IsStatus.indexOf(status) > -1 ) {
-        throttle(addExend(tabId));
+        addExtension(tabId);
     }
 }); 
 
-function addExend(tabId) {
-    injectScript(tabId,{ 
-        file: ScriptUrl,
-        runAt: RunAt }).then( res => {
+function addExtension(tabId) {
+    if (currentTabs.indexOf(tabId) === -1 ) {
+        injectScript(tabId,{ 
+            file: ScriptUrl,
+            runAt: RunAt })
+        .then( res => {
+            currentTabs.push(tabId);
             console.log("ok");
-    }).catch( err => {
-        console.log("err");
-    });
-}
-
-
-function throttle(fn) {
-    var timer = null;
-    return function() {
-        var that = this;
-        if (!timer) {
-            timer = setTimeout(() => {
-                fn.apply(that,arguments);
-                timer = null;
-            },500);
-        }
+        }).catch( err => {
+            console.log("err");
+        });
     }
 }
 
